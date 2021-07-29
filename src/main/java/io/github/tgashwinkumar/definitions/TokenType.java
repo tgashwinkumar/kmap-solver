@@ -8,8 +8,6 @@ public enum TokenType {
     POS,
     SOP,
     INPUT,
-    OUTPUT,
-    STATE,
-    TRUE,
-    FALSE
+    INT,
+    COMMA,
 }

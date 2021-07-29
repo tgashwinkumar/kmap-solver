@@ -52,6 +52,15 @@ public class Lexer {
         return word;
     }
 
+    private String fetchNumber(){
+        String number = "";
+        while(Character.isDigit(this.currentToken)){
+            number += this.currentToken;
+            this.nextToken();
+        }
+        return number;
+    }
+
     private void runLexer() {
         this.nextToken();
         while (this.currentToken != '\u0000') {
@@ -65,6 +74,10 @@ public class Lexer {
                 Token orToken = new Token(TokenType.OR, Character.toString(this.currentToken));
                 this.addTokenToList(orToken);
                 this.nextToken();
+            } else if(this.currentToken == ',') {
+                Token commaToken = new Token(TokenType.COMMA, Character.toString(this.currentToken));
+                this.addTokenToList(commaToken);
+                this.nextToken();
             } else if (this.currentToken == '(') {
                 Token lparenToken = new Token(TokenType.LPAREN, Character.toString(this.currentToken));
                 this.addTokenToList(lparenToken);
@@ -73,30 +86,24 @@ public class Lexer {
                 Token rparenToken = new Token(TokenType.RPAREN, Character.toString(this.currentToken));
                 this.addTokenToList(rparenToken);
                 this.nextToken();
-            } else if (this.currentToken == '1' || this.currentToken == 'T' || this.currentToken == 't') {
-                Token trueToken = new Token(TokenType.TRUE, Character.toString('1'));
-                this.addTokenToList(trueToken);
-                this.nextToken();
-            } else if (this.currentToken == '0' || this.currentToken == 'F' || this.currentToken == 'f') {
-                Token falseToken = new Token(TokenType.FALSE, Character.toString('0'));
-                this.addTokenToList(falseToken);
-                this.nextToken();
             } else if (new String(this.inputArray.array).indexOf(this.currentToken) != -1) {
                 Token inputToken = new Token(TokenType.INPUT, Character.toString(this.currentToken));
                 this.addTokenToList(inputToken);
                 this.nextToken();
             } else if (Character.isLetter(this.currentToken)){
                 String word = this.fetchWord();
-                if(word.toLowerCase() == "sop"){
+                if(word.equalsIgnoreCase("sop")){
                     Token sopToken = new Token(TokenType.SOP, "sop");
                     this.addTokenToList(sopToken);
-                } else if (word.toLowerCase() == "pos"){
+                } else if (word.equalsIgnoreCase("pos")){
                     Token posToken = new Token(TokenType.POS, "pos");
                     this.addTokenToList(posToken);
                 }
+            } else if(Character.isDigit(this.currentToken)) {
+                String number = this.fetchNumber();
+                Token numToken = new Token(TokenType.INT, number);
+                this.addTokenToList(numToken);
             }
-
-            //Shifaa do this work eeeeeeeh
         }
     }
     
