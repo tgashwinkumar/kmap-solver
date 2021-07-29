@@ -5,8 +5,8 @@ public class Token implements NodeType{
     public TokenType tokenType;
     public String tokenValue;
 
-    public RETURN_TYPE typeOf() {
-        return RETURN_TYPE.TOKEN;
+    public NODE_TYPE typeOf() {
+        return NODE_TYPE.TOKEN;
     }
 
     public Token(TokenType ttype, String tvalue){

@@ -124,7 +124,19 @@ public class Parser {
                 this.pushToOperatorStack(this.currentToken);
                 this.nextToken();
             } else if (this.currentToken.getPrecedence() > 0) {
+                while (this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN 
+                    && this.currentToken.getPrecedence() <= this.getCurrentFromOperatorStack().getPrecedence()) {
+                    Token operator = this.popFromOperatorStack();
+                    /*Make Binary Node*/
+                }
+                this.pushToOperatorStack(this.currentToken);
+                this.nextToken();
+            } else if (this.currentToken.tokenType == TokenType.LPAREN){
+                this.pushToOperatorStack(this.currentToken);
+                this.nextToken();
+            } else if (this.currentToken.tokenType == TokenType.RPAREN) {
                 while (this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN) {
+                    Token operator = this.popFromOperatorStack();
                     
                 }
             }
