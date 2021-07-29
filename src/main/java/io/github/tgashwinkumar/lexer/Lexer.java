@@ -86,6 +86,10 @@ public class Lexer {
                 Token rparenToken = new Token(TokenType.RPAREN, Character.toString(this.currentToken));
                 this.addTokenToList(rparenToken);
                 this.nextToken();
+            } else if (this.currentToken == '!') {
+                Token notToken = new Token(TokenType.NOT, Character.toString(this.currentToken));
+                this.addTokenToList(notToken);
+                this.nextToken();
             } else if (new String(this.inputArray.array).indexOf(this.currentToken) != -1) {
                 Token inputToken = new Token(TokenType.INPUT, Character.toString(this.currentToken));
                 this.addTokenToList(inputToken);

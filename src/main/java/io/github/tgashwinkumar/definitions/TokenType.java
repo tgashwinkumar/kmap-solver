@@ -10,4 +10,5 @@ public enum TokenType {
     INPUT,
     INT,
     COMMA,
+    NOT,
 }
