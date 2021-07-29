@@ -64,7 +64,7 @@ public class Lexer {
     private void runLexer() {
         this.nextToken();
         while (this.currentToken != '\u0000') {
-            if ("\n\t ,;\"".indexOf(this.currentToken) != -1){
+            if ("\n\t ;\"".indexOf(this.currentToken) != -1){
                 this.nextToken();
             } else if (this.currentToken == '*') {
                 Token andToken = new Token(TokenType.AND, Character.toString(this.currentToken));

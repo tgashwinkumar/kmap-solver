@@ -3,6 +3,7 @@ package io.github.tgashwinkumar;
 import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.definitions.Token;
 import io.github.tgashwinkumar.lexer.Lexer;
+import io.github.tgashwinkumar.parser.Parser;
 
 /**
  * Hello world!
@@ -18,11 +19,10 @@ public final class App {
     public static void main(String[] args) {
         // System.out.println("Hello World!");
         InputArray inputArray = new InputArray('A', 'B');
-        Lexer lexer = new Lexer(inputArray, "A + (A*B) + SOP(1)");
+        String exprStr = "A + (A*B) + SOP(1,2,3)";
+        Lexer lexer = new Lexer(inputArray, exprStr);
         Token tokens[] =  lexer.getTokens();
-        System.out.println("Token Length: " + tokens.length + "\n" + "A + (A*B) + SOP(1)" + "\n");
-        for(Token t: tokens){
-            System.out.println(t);
-        }
+        Parser pars = new Parser(inputArray, tokens);
+        pars.runParser();
     }
 }
