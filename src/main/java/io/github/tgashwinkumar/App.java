@@ -19,10 +19,14 @@ public final class App {
     public static void main(String[] args) {
         // System.out.println("Hello World!");
         InputArray inputArray = new InputArray('A', 'B');
-        String exprStr = "A + (A*B) + SOP(1,2,3)";
+        String exprStr = "A + (A*B) + SOP(4,1,2,3)";
         Lexer lexer = new Lexer(inputArray, exprStr);
-        BinaryNode tokens[] =  lexer.getTokens();
+        // System.out.println(lexer.getTokens());
+        BinaryNode[] tokens = lexer.getTokens();
+        // lexer.printTokens();
         Parser pars = new Parser(inputArray, tokens);
         // pars.runParser();
+        pars.printTree();
+
     }
 }

@@ -1,19 +1,29 @@
 package io.github.tgashwinkumar.binaryExp;
 
-import io.github.tgashwinkumar.definitions.TokenType;
+import io.github.tgashwinkumar.definitions.TokenType; 
 
 public class BinaryNode{
+
     public BinaryNode leftNode;
     public BinaryNode rightNode;
     public TokenType tokenType;
-    public String tokenValue;
+    public int tokenValue;
+    public BinaryNode[] funcArgs = null;
+    
+    public BinaryNode(TokenType ttype){
+        this.tokenType = ttype;
+        this.tokenValue = -1;
+    }
 
-    /*
-    * Has multiple constructors. USed as Tokenizing class.
-    */
-    public BinaryNode(TokenType ttype, String tvalue){
+    public BinaryNode(TokenType ttype, int tvalue){
         this.tokenType = ttype;
         this.tokenValue = tvalue;
+    }
+
+    public BinaryNode(BinaryNode rootNode, BinaryNode[] functionArgs){
+        this.tokenType = rootNode.tokenType;
+        this.tokenValue = rootNode.tokenValue;
+        this.funcArgs = functionArgs;
     }
 
     public BinaryNode(BinaryNode rootNode){
@@ -36,13 +46,15 @@ public class BinaryNode{
 
     @Override
     public String toString() {
-        return this.tokenType.name() + "-Token@\"" + this.tokenValue + "\"";
+        return this.tokenType.name() + "-Token@" + this.tokenValue;
     }
 
     public int getPrecedence() {
         if (this.tokenType == TokenType.AND) {
-            return 2;
+            return 3;
         } else if (this.tokenType == TokenType.OR) {
+            return 2;
+        } else if(this.tokenType == TokenType.XOR){
             return 1;
         }
         return -1;

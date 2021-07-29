@@ -13,36 +13,47 @@ public class Parser {
     private BinaryNode[] operatorStack;
     private BinaryNode currentToken;
     private Position currentPos = new Position(-1);
+    private int insideFunc = 0;
+    private BinaryNode[] functionArgs;
 
     public Parser(InputArray inputArr, BinaryNode[] tokens){
         this.inputArray = inputArr;
         this.tokenList = tokens;
     }
 
-    private void printStack(BinaryNode[] stack){
-        if(stack == null){
-            System.out.printf("No element");
-        }else{
-            for(BinaryNode e: stack){
-                System.out.printf("%d, ", e);
-            }
-            System.out.println("");
+    public void printTree(){
+        this.runParser();
+        BinaryNode finalTree = this.popFromOperandStack();
+        this.printTree(0, finalTree);
+    }
+
+    public void printTree(int indent, BinaryNode node){
+        for(int i = 0; i < indent; i++){
+            System.out.print("\t");
+        }
+        System.out.println("- " + node);
+        if(node.leftNode != null){
+            printTree(indent+1, node.leftNode);
+        }
+        if(node.rightNode != null){
+            printTree(indent+1, node.rightNode);
         }
     }
 
-    private BinaryNode getCurrentFromOperandStack(){
-        int len = 0;
-        if (this.operandStack != null) {
-            len = this.operandStack.length;
-            return this.operandStack[len-1];
-        }
-        return null;
-    }
+    // private BinaryNode getCurrentFromOperandStack(){
+    //     int len = 0;
+    //     if (this.operandStack != null) {
+    //         len = this.operandStack.length;
+    //         return this.operandStack[len-1];
+    //     }
+    //     return null;
+    // }
 
     private BinaryNode getCurrentFromOperatorStack() {
         int len = 0;
         if (this.operatorStack != null) {
             len = this.operatorStack.length;
+            if(len == 0) return null;
             return this.operatorStack[len - 1];
         }
         return null;
@@ -104,6 +115,19 @@ public class Parser {
         return popElement;
     }
 
+    private BinaryNode pushAsFuncArg(BinaryNode newToken){
+        int len = 0;
+        if(this.functionArgs != null){
+            len = this.functionArgs.length;
+        }
+        BinaryNode[] newList = new BinaryNode[len+1];
+        for(int i = 0; i < len; i++){
+            newList[i] = this.functionArgs[i];
+        }
+        this.functionArgs[len] = newToken;
+        return this.functionArgs[len];
+    }
+
     private void nextToken(){
         this.currentPos.nextPosition();
         if(this.currentPos.position < this.tokenList.length){
@@ -113,28 +137,51 @@ public class Parser {
         }
     }
 
-    private BinaryNode getBinaryExpression(BinaryNode operator, BinaryNode leftNode, BinaryNode rightNode){
+    private BinaryNode getBinaryExpression(){
+        BinaryNode operator = this.popFromOperatorStack();
+        BinaryNode rightNode = this.popFromOperandStack();
+        BinaryNode leftNode = this.popFromOperandStack();
         BinaryNode binaryExp = new BinaryNode(operator, leftNode, rightNode);
         return binaryExp;
     }
 
-    private void runParser(){
+    private void runParser() {
         this.nextToken();
         while(this.currentToken != null){
-            if(this.currentToken.tokenType == TokenType.INT || this.currentToken.tokenType == TokenType.INPUT){
-                this.pushToOperandStack(this.currentToken);
-                this.nextToken();
+            // System.out.println(this.currentToken);
+            if(this.currentToken.tokenType == TokenType.INT){
+                if(this.insideFunc > 0){
+                    this.pushAsFuncArg(this.currentToken);
+                    this.nextToken();
+                }else{
+                    this.pushToOperandStack(this.currentToken);
+                    this.nextToken();
+                }
+            } else if(this.currentToken.tokenType == TokenType.INPUT){
+                if( this.getCurrentFromOperatorStack() != null && this.getCurrentFromOperatorStack().tokenType == TokenType.NOT){
+                    BinaryNode operator = this.popFromOperatorStack();
+                    BinaryNode newExp = new BinaryNode(operator, this.currentToken);
+                    this.pushToOperandStack(newExp);
+                    this.nextToken();
+                }else{
+                    this.pushToOperandStack(this.currentToken);
+                    this.nextToken();
+                }
             } else if (this.currentToken.tokenType == TokenType.SOP || this.currentToken.tokenType == TokenType.POS){
                 this.pushToOperatorStack(this.currentToken);
+                this.insideFunc += 1;
                 this.nextToken();
-            } else if (this.currentToken.getPrecedence() > 0) {
-                while (this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN 
+            }else if(this.currentToken.tokenType == TokenType.NOT){ 
+                this.pushToOperatorStack(this.currentToken);
+                this.nextToken();
+            }else if(this.currentToken.tokenType == TokenType.COMMA){
+                this.nextToken();
+            }else if (this.currentToken.getPrecedence() > 0) {
+                while (this.getCurrentFromOperatorStack() != null && this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN 
                     && this.currentToken.getPrecedence() <= this.getCurrentFromOperatorStack().getPrecedence()) {
-                    BinaryNode operator = this.popFromOperatorStack();
-                    BinaryNode rightNode = this.popFromOperandStack();
-                    BinaryNode leftNode = this.popFromOperandStack();
-                    BinaryNode newExp = this.getBinaryExpression(operator, leftNode, rightNode);
+                    BinaryNode newExp = this.getBinaryExpression();
                     this.pushToOperandStack(newExp);
+                    this.nextToken();
                 }
                 this.pushToOperatorStack(this.currentToken);
                 this.nextToken();
@@ -142,13 +189,34 @@ public class Parser {
                 this.pushToOperatorStack(this.currentToken);
                 this.nextToken();
             } else if (this.currentToken.tokenType == TokenType.RPAREN) {
-                while (this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN) {
-                    BinaryNode operator = this.popFromOperatorStack();
-                    BinaryNode rightNode = this.popFromOperandStack();
-                    BinaryNode leftNode = this.popFromOperandStack();
-                    BinaryNode newExp = this.getBinaryExpression(operator, leftNode, rightNode);
-                    this.pushToOperandStack(newExp);
-                }
+                if(this.insideFunc > 0){
+                    if(this.getCurrentFromOperatorStack() != null
+                            && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
+                        this.popFromOperatorStack();
+                    }
+                    BinaryNode funcExp = new BinaryNode(this.popFromOperatorStack(), this.functionArgs);
+                    this.pushToOperandStack(funcExp);
+                    this.insideFunc = 0;
+                    this.functionArgs = null;
+                }else {
+                    while (this.getCurrentFromOperatorStack() != null &&  this.getCurrentFromOperatorStack().tokenType != TokenType.LPAREN) {
+                        BinaryNode newExp = this.getBinaryExpression();
+                        this.pushToOperandStack(newExp);
+                        this.nextToken();
+                    }
+                    if (this.getCurrentFromOperatorStack() != null && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
+                        this.popFromOperatorStack();
+                    }
+                }   
+            }
+        }
+
+        while(this.operatorStack.length > 0){
+            if(this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN){
+                // throw new MismatchedParen();
+            }else{
+                BinaryNode newExp = this.getBinaryExpression();
+                this.pushToOperandStack(newExp);
             }
         }
     }
