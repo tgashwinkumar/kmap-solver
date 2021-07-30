@@ -1,5 +1,7 @@
 package io.github.tgashwinkumar.binaryExp;
 
+import io.github.tgashwinkumar.booleanUtils.BooleanUtils;
+import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.definitions.TokenType;
 
 public class BinaryNode {
@@ -9,6 +11,8 @@ public class BinaryNode {
     public TokenType tokenType;
     public int tokenValue;
     public BinaryNode[] funcArgs = null;
+
+    private boolean willLog = true;
 
     public BinaryNode(TokenType ttype) {
         this.tokenType = ttype;
@@ -61,5 +65,68 @@ public class BinaryNode {
             return 1;
         }
         return -1;
+    }
+
+    public int getBooleanValue(int inputNumber, InputArray inputArr) {
+        int leftInt = 0;
+        int rightInt = 0;
+
+        if (this.leftNode != null) {
+            if (this.leftNode.tokenType != TokenType.INPUT) {
+                leftInt = this.leftNode.getBooleanValue(inputNumber, inputArr);
+            } else {
+                leftInt = BooleanUtils.intToBinaryArray(inputNumber, inputArr.array.length)[this.leftNode.tokenValue];
+            }
+        }
+
+        if (this.rightNode != null) {
+            if (this.rightNode.tokenType != TokenType.INPUT) {
+                rightInt = this.rightNode.getBooleanValue(inputNumber, inputArr);
+            } else {
+                rightInt = BooleanUtils.intToBinaryArray(inputNumber, inputArr.array.length)[this.rightNode.tokenValue];
+            }
+        }
+
+        if (this.tokenType == TokenType.AND) {
+            if (this.willLog)
+                System.out.print(leftInt + " * " + rightInt + " = ");
+            if (leftInt == 1 && rightInt == 1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        if (this.tokenType == TokenType.OR) {
+            if (this.willLog)
+                System.out.print(leftInt + " + " + rightInt + " = ");
+            if (leftInt == 0 && rightInt == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
+        if (this.tokenType == TokenType.NOT) {
+            if (this.willLog)
+                System.out.print("!" + leftInt + " = ");
+            if (leftInt == 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        if (this.tokenType == TokenType.XOR) {
+            if (this.willLog)
+                System.out.print(leftInt + " ^ " + rightInt + " = ");
+            if (leftInt == rightInt) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
+        return 0;
     }
 }

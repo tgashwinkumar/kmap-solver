@@ -14,14 +14,20 @@ public class Parser {
     private int insideFunc = 0;
     private BinaryNode[] functionArgs;
     private boolean willLog = false;
+    private boolean alreadyCalled = false;
+    private BinaryNode finalValue;
 
     public Parser(BinaryNode[] tokens) {
         this.tokenList = tokens;
     }
 
     public BinaryNode getFinalTree() {
-        this.runParser();
-        return this.popFromOperandStack();
+        if(!this.alreadyCalled){
+            this.alreadyCalled = true;
+            this.runParser();
+            this.finalValue = this.popFromOperandStack();
+        }
+        return this.finalValue;
     }
 
     private BinaryNode getCurrentFromOperatorStack() {
@@ -46,7 +52,8 @@ public class Parser {
         }
         newStack[len] = newToken;
         this.operandStack = newStack;
-        if(this.willLog) System.out.println("Operand Pushed: " + newToken);
+        if (this.willLog)
+            System.out.println("Operand Pushed: " + newToken);
         return newToken;
     }
 
@@ -55,7 +62,7 @@ public class Parser {
         if (this.operandStack != null) {
             len = this.operandStack.length;
         }
-        if(len == 0){
+        if (len == 0) {
             return null;
         }
         BinaryNode[] newStack = new BinaryNode[len - 1];
@@ -64,7 +71,8 @@ public class Parser {
         }
         BinaryNode popElement = this.operandStack[len - 1];
         this.operandStack = newStack;
-        if(this.willLog) System.out.println("Operand Popped: " + popElement);
+        if (this.willLog)
+            System.out.println("Operand Popped: " + popElement);
         return popElement;
     }
 
@@ -79,7 +87,8 @@ public class Parser {
         }
         newStack[len] = newToken;
         this.operatorStack = newStack;
-        if(this.willLog) System.out.println("Operator pushed: " + newToken);
+        if (this.willLog)
+            System.out.println("Operator pushed: " + newToken);
         return newToken;
     }
 
@@ -94,7 +103,8 @@ public class Parser {
         }
         BinaryNode popElement = this.operatorStack[len - 1];
         this.operatorStack = newStack;
-        if(this.willLog) System.out.println("Operator Popped: " + popElement);
+        if (this.willLog)
+            System.out.println("Operator Popped: " + popElement);
         return popElement;
     }
 
@@ -109,7 +119,8 @@ public class Parser {
         }
         newList[len] = newToken;
         this.functionArgs = newList;
-        if(this.willLog) System.out.println("Function Arg pushed: " + newToken);
+        if (this.willLog)
+            System.out.println("Function Arg pushed: " + newToken);
         return this.functionArgs[len];
     }
 
@@ -117,7 +128,9 @@ public class Parser {
         this.currentPos.nextPosition();
         if (this.currentPos.position < this.tokenList.length) {
             this.currentToken = this.tokenList[this.currentPos.position];
-            if(this.willLog) System.out.println("\n\nCurrent Token: " + this.currentToken + "\tIsInsidefunc: " + (this.insideFunc>0));
+            if (this.willLog)
+                System.out.println(
+                        "\n\nCurrent Token: " + this.currentToken + "\tIsInsidefunc: " + (this.insideFunc > 0));
         } else {
             this.currentToken = null;
         }
@@ -128,7 +141,8 @@ public class Parser {
         BinaryNode rightNode = this.popFromOperandStack();
         BinaryNode leftNode = this.popFromOperandStack();
         BinaryNode binaryExp = new BinaryNode(operator, leftNode, rightNode);
-        if(this.willLog) System.out.println("BinaryExp created.: " + binaryExp);
+        if (this.willLog)
+            System.out.println("BinaryExp created.: " + binaryExp);
         return binaryExp;
     }
 
@@ -192,9 +206,10 @@ public class Parser {
                         BinaryNode newExp = this.getBinaryExpression();
                         this.pushToOperandStack(newExp);
                     }
-                    if(this.willLog) System.out.println(this.getCurrentFromOperatorStack());
+                    if (this.willLog)
+                        System.out.println(this.getCurrentFromOperatorStack());
                     if (this.getCurrentFromOperatorStack() != null
-                    && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
+                            && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
                         this.popFromOperatorStack();
                     }
                     this.nextToken();
@@ -202,7 +217,8 @@ public class Parser {
             }
         }
 
-        if(this.willLog) System.out.println("\n\n\n");
+        if (this.willLog)
+            System.out.println("\n\n\n");
 
         while (this.operatorStack.length > 0) {
             if (this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
