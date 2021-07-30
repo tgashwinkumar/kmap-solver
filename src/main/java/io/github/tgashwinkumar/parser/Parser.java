@@ -12,8 +12,9 @@ public class Parser {
     private BinaryNode currentToken;
     private Position currentPos = new Position(-1);
     private int insideFunc = 0;
+    private int insideNot = 0;
     private BinaryNode[] functionArgs;
-    private boolean willLog = false;
+    private boolean willLog = true;
     private boolean alreadyCalled = false;
     private BinaryNode finalValue;
 
@@ -175,6 +176,13 @@ public class Parser {
             } else if (this.currentToken.tokenType == TokenType.NOT) {
                 this.pushToOperatorStack(this.currentToken);
                 this.nextToken();
+                if(this.currentToken.tokenType == TokenType.INPUT){
+                    BinaryNode notExp = new BinaryNode(this.popFromOperatorStack(), this.currentToken);
+                    this.pushToOperandStack(notExp);
+                    this.nextToken();
+                }else{
+                    this.insideNot += 1;
+                }
             } else if (this.currentToken.tokenType == TokenType.COMMA) {
                 this.nextToken();
             } else if (this.currentToken.getPrecedence() > 0) {
@@ -212,8 +220,16 @@ public class Parser {
                             && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
                         this.popFromOperatorStack();
                     }
-                    this.nextToken();
                 }
+                if (this.insideNot > 0) {
+                    this.insideNot -= 1;
+                    if (this.getCurrentFromOperatorStack() != null
+                            && this.getCurrentFromOperatorStack().tokenType == TokenType.NOT) {
+                        BinaryNode notExp = new BinaryNode(this.popFromOperatorStack(), this.popFromOperandStack());
+                        this.pushToOperandStack(notExp);
+                    }
+                }
+                this.nextToken();
             }
         }
 

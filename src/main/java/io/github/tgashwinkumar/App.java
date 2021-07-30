@@ -11,7 +11,7 @@ public final class App {
 
     public static void main(String[] args) {
         InputArray inputArray = new InputArray('A', 'B');
-        String exprStr = "!(A^B)";
+        String exprStr = "(!A+!B)";
         Lexer lexer = new Lexer(inputArray, exprStr);
         BinaryNode[] tokens = lexer.getTokens();
         Parser pars = new Parser(tokens);
