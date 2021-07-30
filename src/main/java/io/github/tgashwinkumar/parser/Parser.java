@@ -1,7 +1,6 @@
 package io.github.tgashwinkumar.parser;
 
 import io.github.tgashwinkumar.binaryExp.BinaryNode;
-import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.definitions.Position;
 import io.github.tgashwinkumar.definitions.TokenType;
 
@@ -14,6 +13,7 @@ public class Parser {
     private Position currentPos = new Position(-1);
     private int insideFunc = 0;
     private BinaryNode[] functionArgs;
+    private boolean willLog = false;
 
     public Parser(BinaryNode[] tokens) {
         this.tokenList = tokens;
@@ -46,7 +46,7 @@ public class Parser {
         }
         newStack[len] = newToken;
         this.operandStack = newStack;
-        System.out.println("Operand Pushed: " + newToken);
+        if(this.willLog) System.out.println("Operand Pushed: " + newToken);
         return newToken;
     }
 
@@ -64,7 +64,7 @@ public class Parser {
         }
         BinaryNode popElement = this.operandStack[len - 1];
         this.operandStack = newStack;
-        System.out.println("Operand Popped: " + popElement);
+        if(this.willLog) System.out.println("Operand Popped: " + popElement);
         return popElement;
     }
 
@@ -79,7 +79,7 @@ public class Parser {
         }
         newStack[len] = newToken;
         this.operatorStack = newStack;
-        System.out.println("Operator pushed: " + newToken);
+        if(this.willLog) System.out.println("Operator pushed: " + newToken);
         return newToken;
     }
 
@@ -94,7 +94,7 @@ public class Parser {
         }
         BinaryNode popElement = this.operatorStack[len - 1];
         this.operatorStack = newStack;
-        System.out.println("Operator Popped: " + popElement);
+        if(this.willLog) System.out.println("Operator Popped: " + popElement);
         return popElement;
     }
 
@@ -109,7 +109,7 @@ public class Parser {
         }
         newList[len] = newToken;
         this.functionArgs = newList;
-        System.out.println("Function Arg pushed: " + newToken);
+        if(this.willLog) System.out.println("Function Arg pushed: " + newToken);
         return this.functionArgs[len];
     }
 
@@ -117,7 +117,7 @@ public class Parser {
         this.currentPos.nextPosition();
         if (this.currentPos.position < this.tokenList.length) {
             this.currentToken = this.tokenList[this.currentPos.position];
-            System.out.println("\n\nCurrent Token: " + this.currentToken + "\tIsInsidefunc: " + (this.insideFunc>0));
+            if(this.willLog) System.out.println("\n\nCurrent Token: " + this.currentToken + "\tIsInsidefunc: " + (this.insideFunc>0));
         } else {
             this.currentToken = null;
         }
@@ -128,7 +128,7 @@ public class Parser {
         BinaryNode rightNode = this.popFromOperandStack();
         BinaryNode leftNode = this.popFromOperandStack();
         BinaryNode binaryExp = new BinaryNode(operator, leftNode, rightNode);
-        System.out.println("BinaryExp created.: " + binaryExp);
+        if(this.willLog) System.out.println("BinaryExp created.: " + binaryExp);
         return binaryExp;
     }
 
@@ -192,7 +192,7 @@ public class Parser {
                         BinaryNode newExp = this.getBinaryExpression();
                         this.pushToOperandStack(newExp);
                     }
-                    System.out.println(this.getCurrentFromOperatorStack());
+                    if(this.willLog) System.out.println(this.getCurrentFromOperatorStack());
                     if (this.getCurrentFromOperatorStack() != null
                     && this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {
                         this.popFromOperatorStack();
@@ -202,7 +202,7 @@ public class Parser {
             }
         }
 
-        System.out.println("\n\n\n");
+        if(this.willLog) System.out.println("\n\n\n");
 
         while (this.operatorStack.length > 0) {
             if (this.getCurrentFromOperatorStack().tokenType == TokenType.LPAREN) {

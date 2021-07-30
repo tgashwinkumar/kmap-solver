@@ -12,7 +12,7 @@ public class Lexer {
     private Position currentPos = new Position(-1);
     private char currentToken = '\u0000';
     private BinaryNode[] tokenList;
-
+    private boolean willLog = false;
 
     public Lexer(InputArray inputArray, String expressionStr){
         this.inputArray = inputArray;
@@ -40,6 +40,7 @@ public class Lexer {
             newList[i] = this.tokenList[i];
         }
         newList[length] = newToken;
+        if(this.willLog) System.out.println(newToken);
         this.tokenList = newList;
     }
 
