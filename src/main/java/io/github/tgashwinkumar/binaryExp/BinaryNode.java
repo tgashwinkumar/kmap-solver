@@ -10,9 +10,8 @@ public class BinaryNode {
     public BinaryNode rightNode;
     public TokenType tokenType;
     public int tokenValue;
-    public BinaryNode[] funcArgs = null;
-
-    private boolean willLog = true;
+    public BinaryNode[] funcArgs = null; 
+    private boolean willLog = false;
 
     public BinaryNode(TokenType ttype) {
         this.tokenType = ttype;

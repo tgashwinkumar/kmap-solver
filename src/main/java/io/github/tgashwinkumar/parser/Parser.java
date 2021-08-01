@@ -191,7 +191,6 @@ public class Parser {
                         && this.currentToken.getPrecedence() < this.getCurrentFromOperatorStack().getPrecedence()) {
                     BinaryNode newExp = this.getBinaryExpression();
                     this.pushToOperandStack(newExp);
-                    this.nextToken();
                 }
                 this.pushToOperatorStack(this.currentToken);
                 this.nextToken();
