@@ -1,5 +1,8 @@
 package io.github.tgashwinkumar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.kmap.KMap;
 

@@ -1,7 +1,5 @@
 package io.github.tgashwinkumar.binaryExp;
 
-import java.util.Arrays;
-
 import io.github.tgashwinkumar.booleanUtils.BooleanUtils;
 import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.definitions.TokenType;
