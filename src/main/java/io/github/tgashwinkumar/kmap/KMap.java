@@ -12,6 +12,9 @@ import io.github.tgashwinkumar.errors.InputLimitExceeded;
 import io.github.tgashwinkumar.lexer.Lexer;
 import io.github.tgashwinkumar.parser.Parser;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class KMap {
 
     private InputArray inputArray;
@@ -115,6 +118,11 @@ public class KMap {
         fJFrame.setSize(400, combLen * 50);
         fJFrame.setTitle(this.expressionString);
         fJFrame.setVisible(true);
+        fJFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
 }

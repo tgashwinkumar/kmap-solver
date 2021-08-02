@@ -12,6 +12,9 @@ import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.lexer.Lexer;
 import io.github.tgashwinkumar.parser.Parser;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class Truthtable {
 
     private InputArray inputArray;
@@ -72,6 +75,11 @@ public class Truthtable {
         fJFrame.setSize(400, combLen*50);
         fJFrame.setTitle(this.expressionString);
         fJFrame.setVisible(true);
+        fJFrame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                System.exit(0);
+            }
+        });
     }
 
 }
