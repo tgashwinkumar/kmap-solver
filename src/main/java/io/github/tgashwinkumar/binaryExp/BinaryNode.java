@@ -1,5 +1,7 @@
 package io.github.tgashwinkumar.binaryExp;
 
+import java.util.Arrays;
+
 import io.github.tgashwinkumar.booleanUtils.BooleanUtils;
 import io.github.tgashwinkumar.definitions.InputArray;
 import io.github.tgashwinkumar.definitions.TokenType;
@@ -69,12 +71,35 @@ public class BinaryNode {
     public int getBooleanValue(int inputNumber, InputArray inputArr) {
         int leftInt = 0;
         int rightInt = 0;
+        int inputLen = inputArr.array.length;
+        
+        if(this.tokenType == TokenType.SOP){
+            if(this.willLog)
+                System.out.print(this.toString());
+            for(BinaryNode arg: this.funcArgs){
+                if(arg.tokenValue == inputNumber){
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        if(this.tokenType == TokenType.POS){
+            if(this.willLog)
+                System.out.print(this.toString());
+            for (BinaryNode arg : this.funcArgs) {
+                if (arg.tokenValue == inputNumber) {
+                    return 0;
+                }
+            }
+            return 1;
+        }
 
         if (this.leftNode != null) {
             if (this.leftNode.tokenType != TokenType.INPUT) {
                 leftInt = this.leftNode.getBooleanValue(inputNumber, inputArr);
             } else {
-                leftInt = BooleanUtils.intToBinaryArray(inputNumber, inputArr.array.length)[this.leftNode.tokenValue];
+                leftInt = BooleanUtils.intToBinaryArray(inputNumber, inputLen)[this.leftNode.tokenValue];
             }
         }
 
@@ -82,7 +107,7 @@ public class BinaryNode {
             if (this.rightNode.tokenType != TokenType.INPUT) {
                 rightInt = this.rightNode.getBooleanValue(inputNumber, inputArr);
             } else {
-                rightInt = BooleanUtils.intToBinaryArray(inputNumber, inputArr.array.length)[this.rightNode.tokenValue];
+                rightInt = BooleanUtils.intToBinaryArray(inputNumber, inputLen)[this.rightNode.tokenValue];
             }
         }
 

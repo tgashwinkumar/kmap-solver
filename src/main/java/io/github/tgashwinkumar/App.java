@@ -1,7 +1,7 @@
 package io.github.tgashwinkumar;
 
 import io.github.tgashwinkumar.definitions.InputArray;
-import io.github.tgashwinkumar.truthtable.Truthtable;
+import io.github.tgashwinkumar.kmap.KMap;
 
 public final class App {
     private App() {
@@ -9,8 +9,8 @@ public final class App {
 
     public static void main(String[] args) {
         InputArray inputArray = new InputArray('A', 'B', 'C');
-        String exprStr = "A*B+C*A";
-        Truthtable truthTable = new Truthtable(inputArray, exprStr);
-        truthTable.showTable();
+        String exprStr = "A+B+C";
+        KMap kmap = new KMap(inputArray, exprStr);
+        kmap.showKMap();
     }
 }

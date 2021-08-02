@@ -26,6 +26,7 @@ public class Truthtable {
         this.expressionString = exprStr;
         this.inputLen = this.inputArray.array.length;
         this.combLen = (int)Math.pow(2, inputLen);
+        this.evaluateTable();
     }
 
     private void evaluateTable(){
@@ -40,7 +41,6 @@ public class Truthtable {
     }
 
     public void printTable(){
-        this.evaluateTable();
         System.out.println("Y = " + this.expressionString);
         for(int i = 0; i < this.combLen; i++){
             System.out.println(i + " = " + this.tableMap.get(i));
@@ -48,7 +48,6 @@ public class Truthtable {
     }
 
     public void showTable(){
-        this.evaluateTable();
         String[][] data = new String[(int)this.combLen][this.inputLen+1];
         String[] columns = new String[this.inputLen+1];
         for(int i = 0; i < this.inputLen; i++){
