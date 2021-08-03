@@ -14,7 +14,7 @@ public class Parser {
     private int insideFunc = 0;
     private int insideNot = 0;
     private BinaryNode[] functionArgs;
-    private boolean willLog = true;
+    private boolean willLog = false;
     private boolean alreadyCalled = false;
     private BinaryNode finalValue;
 
