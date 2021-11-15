@@ -1,3 +1,4 @@
+package io.github.tgashwinkumar.QuineMcCluskey;
 import java.util.*;
 public class Quin {
     ArrayList<ArrayList<Integer> > x = new ArrayList<ArrayList<Integer> >();
