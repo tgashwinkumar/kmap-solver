@@ -21,14 +21,14 @@ public class Truthtable {
     private String expressionString;
 
     private int inputLen;
-    private int combLen;
+    public int tableLength;
     public HashMap<Integer, Integer> tableMap = new HashMap<>();
 
     public Truthtable(InputArray inputArr, String exprStr){
         this.inputArray = inputArr;
         this.expressionString = exprStr;
         this.inputLen = this.inputArray.array.length;
-        this.combLen = (int)Math.pow(2, inputLen);
+        this.tableLength = (int)Math.pow(2, inputLen);
         this.evaluateTable();
     }
 
@@ -38,26 +38,26 @@ public class Truthtable {
         Parser pars = new Parser(tokens);
         BinaryNode finalNode = pars.getFinalTree();
         System.out.println(finalNode);
-        for(int i = 0; i < combLen; i++){
+        for(int i = 0; i < tableLength; i++){
             this.tableMap.put(i, finalNode.getBooleanValue(i, inputArray));
         }
     }
 
     public void printTable(){
         System.out.println("Y = " + this.expressionString);
-        for(int i = 0; i < this.combLen; i++){
+        for(int i = 0; i < this.tableLength; i++){
             System.out.println(i + " = " + this.tableMap.get(i));
         }
     }
 
     public void showTable(){
-        String[][] data = new String[(int)this.combLen][this.inputLen+1];
+        String[][] data = new String[(int)this.tableLength][this.inputLen+1];
         String[] columns = new String[this.inputLen+1];
         for(int i = 0; i < this.inputLen; i++){
             columns[i] = Character.toString(this.inputArray.array[i]);
         }
         columns[inputLen] = "Output";
-        for(int i = 0; i < combLen; i++){
+        for(int i = 0; i < tableLength; i++){
             int[] inputComb = BooleanUtils.intToBinaryArray(i, inputLen);
             for(int j = 0; j < inputLen; j++){
                 data[i][j] = Integer.toString(inputComb[j]);
@@ -69,10 +69,10 @@ public class Truthtable {
 
         JFrame fJFrame = new JFrame();
         JTable jTable = new JTable(data, columns);
-        jTable.setBounds(30,40,100,combLen*50);
+        jTable.setBounds(30,40,100,tableLength*50);
         JScrollPane sp = new JScrollPane(jTable);
         fJFrame.add(sp);
-        fJFrame.setSize(400, combLen*50);
+        fJFrame.setSize(400, tableLength*50);
         fJFrame.setTitle(this.expressionString);
         fJFrame.setVisible(true);
         fJFrame.addWindowListener(new WindowAdapter(){
